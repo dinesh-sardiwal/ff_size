@@ -1,0 +1,6 @@
+a.default { background:#FFF url(../icons/text-plain.png) no-repeat right center; padding-right: 20px; }
+a.pdf { background:#FFF url(../icons/application-pdf.png) no-repeat right center; padding-right: 20px;}
+a.doc { background:#FFF url(../icons/x-office-document.png) no-repeat right center; padding-right: 20px;}
+a.xls { background:#FFF url(../icons/x-office-spreadsheet.png) no-repeat right center; padding-right: 20px;}
+a.ppt { background:#FFF url(../icons/x-office-presentation.png) no-repeat right center; padding-right: 20px; }
+a.txt { background:#FFF url(../icons/text-plain.png) no-repeat right center; padding-right: 20px; }
