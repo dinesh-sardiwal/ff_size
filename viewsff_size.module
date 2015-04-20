@@ -68,10 +68,8 @@ function viewsff_size_generated_links($convert_size, $filepath, $label = NULL) {
 
 	preg_match('/[a-zA-Z]+$/', $filepath, $match); //search file extensin end of the string.
 
-	if (empty($label)) {
-		$label = t('Download');
-	}
-
+	$label = $label ? $label : 'Download';
+	
 	$class_name = "$match[0] default"; // css class name
 
 	$document_path = l("$label ( $convert_size )", $filepath, 
@@ -106,7 +104,8 @@ function file_key_filter($field_key_label) {
 }
 
 /*
-* clone of view result 
+* clone of view result and assign new result of view result object.
+* $result->$field_key[$i] it seem dont work
 * 
 */
 function viewsff_size_result_object($result, $field_key, $label=NULL) {
@@ -124,7 +123,7 @@ function viewsff_size_result_object($result, $field_key, $label=NULL) {
 			$file_size = $result->$field_key ? $filter_key_array[$i]['raw']['filesize'] :'';
 			$filemime = $result->$field_key ? $filter_key_array[$i]['raw']['filemime'] :'';
 
-			if (!empty($result->$field_key)) {
+			if ($result->$field_key) {
 				$convert_size =format_size($file_size);
 				if ($document_path !='') {
 					$clone_key_array = $result_clone->$field_key;
