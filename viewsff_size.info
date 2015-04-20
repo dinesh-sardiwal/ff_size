@@ -1,0 +1,7 @@
+name = Views FileField Size
+package = Views
+dependencies[] = views
+description = Add a file type icon and size with every file links .
+core = 7.x
+configure = admin/config/urltofile
+version = "7.x-1.0-alpha1"

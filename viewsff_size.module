@@ -1,0 +1,138 @@
+<?php
+/**
+* Allow to set a user premission.
+*/
+function viewsff_size_permission() {
+	return array(
+		'access Views fileField size view alter' => array(
+		  'title' => t('Access view url to file alter'),
+		  'description' => t('Override view filefield formatter (URL TO FILE) with filesize and icons'),
+		),
+	);
+}
+
+
+/**
+* Implements hook_menu.
+*/
+
+function viewsff_size_menu() {
+
+  $items = array();
+
+  $items['admin/config/urltofile'] = array(
+    'title'=> 'Collect File Field Key',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('viewsff_size_admin_settings_form'),
+    'access arguments' => array('access fileField size view alter'),
+    'file' => 'includes/viewsff_size.admin.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
+/*
+* view pre_render overide view result.
+*/
+
+function viewsff_size_views_pre_render(&$view) {
+
+	//view rednering time i have a add css file
+	drupal_add_css(drupal_get_path('module', 'viewsff_size') . '/css/filefieldsize.css');
+
+	$field_key = variable_get('collect_file_field_key'); // collect admin setting.
+
+	$field_key_explode = explode(',', $field_key); // file filed key explode. 
+
+	$array_map = array_map("file_key_filter", $field_key_explode);
+	$filed_array_size = sizeof($array_map);
+
+	foreach ($view->result as $result ) {		
+		for ($i=0; $i < $filed_array_size; $i++) { 
+			foreach ($array_map[$i] as $key => $value) {
+			  viewsff_size_result_object($result, 'field_' . $key, $value); //view file field result override with file icon and size. 
+			}
+		}
+	}
+}
+
+/*
+* create a link with file size and icons.
+*/
+
+function viewsff_size_generated_links($convert_size, $filepath, $label = NULL) {
+
+	global $base_path;
+	$path = base_path() . drupal_get_path('module', 'viewsff_size'); 
+
+	preg_match('/[a-zA-Z]+$/', $filepath, $match); //search file extensin end of the string.
+
+	if (empty($label)) {
+		$label = t('Download');
+	}
+
+	$class_name = "$match[0] default"; // css class name
+
+	$document_path = l("$label ( $convert_size )", $filepath, 
+		array(
+			'attributes' => array(
+				'target' => '_blank',
+				'class' => $class_name
+			),
+			'html' => TRUE
+		)
+	);
+
+	return $document_path;
+}
+
+/*
+* make a files key array with filed key and label.
+*
+*/
+function file_key_filter($field_key_label) {
+
+	$fieldkey_label_array = explode(':', $field_key_label);
+
+	$field_key = isset($fieldkey_label_array[0]) ? $fieldkey_label_array[0] : '';
+	$label = isset($fieldkey_label_array[1]) ? $fieldkey_label_array[1] : '';
+
+	$keys_array = array(
+		trim($field_key) => trim($label)
+	);
+
+	return $keys_array;
+}
+
+/*
+* clone of view result 
+* 
+*/
+function viewsff_size_result_object($result, $field_key, $label=NULL) {
+
+	$result_clone = $result;  //clone view result 
+	if (property_exists($result, $field_key))
+	{
+		$filter_key_array = $result->$field_key;
+
+		for ($i=0; $i < sizeof($filter_key_array); $i++) {
+
+			$document_path = $result->$field_key ? ((array_key_exists('#markup',$filter_key_array[$i]['rendered'])) ? 
+			$filter_key_array[$i]['rendered']['#markup'] :'') :'';
+
+			$file_size = $result->$field_key ? $filter_key_array[$i]['raw']['filesize'] :'';
+			$filemime = $result->$field_key ? $filter_key_array[$i]['raw']['filemime'] :'';
+
+			if (!empty($result->$field_key)) {
+				$convert_size =format_size($file_size);
+				if ($document_path !='') {
+					$clone_key_array = $result_clone->$field_key;
+
+					$clone_key_array[$i]['rendered']['#markup']= viewsff_size_generated_links($convert_size, $document_path, $label);
+					$result->$field_key = $clone_key_array;
+				}
+			}
+		}
+	}
+}
