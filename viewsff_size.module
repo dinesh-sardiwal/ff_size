@@ -1,10 +1,11 @@
 <?php
 /**
 * Allow to set a user premission.
+* Implements hook_permission.
 */
 function viewsff_size_permission() {
 	return array(
-		'access Views fileField size view alter' => array(
+	  'access Views fileField size view alter' => array(
 		  'title' => t('Access view url to file alter'),
 		  'description' => t('Override view filefield formatter (URL TO FILE) with filesize and icons'),
 		),
@@ -33,7 +34,7 @@ function viewsff_size_menu() {
 }
 
 /*
-* view pre_render overide view result.
+*  Implements hook_views_pre_render overide view result.
 */
 
 function viewsff_size_views_pre_render(&$view) {
@@ -117,18 +118,18 @@ function viewsff_size_result_object($result, $field_key, $label=NULL) {
 
 		for ($i=0; $i < sizeof($filter_key_array); $i++) {
 
-			$document_path = $result->$field_key ? ((array_key_exists('#markup',$filter_key_array[$i]['rendered'])) ? 
-			$filter_key_array[$i]['rendered']['#markup'] :'') :'';
+			$document_path = $result->$field_key ? ((array_key_exists('#markup', $filter_key_array[$i]['rendered'])) ? 
+			$filter_key_array[$i]['rendered']['#markup'] : '') : '';
 
-			$file_size = $result->$field_key ? $filter_key_array[$i]['raw']['filesize'] :'';
-			$filemime = $result->$field_key ? $filter_key_array[$i]['raw']['filemime'] :'';
+			$file_size = $result->$field_key ? $filter_key_array[$i]['raw']['filesize'] : '';
+			$filemime = $result->$field_key ? $filter_key_array[$i]['raw']['filemime'] : '';
 
 			if ($result->$field_key) {
-				$convert_size =format_size($file_size);
+				$convert_size = format_size($file_size);
 				if ($document_path !='') {
 					$clone_key_array = $result_clone->$field_key;
 
-					$clone_key_array[$i]['rendered']['#markup']= viewsff_size_generated_links($convert_size, $document_path, $label);
+					$clone_key_array[$i]['rendered']['#markup'] = viewsff_size_generated_links($convert_size, $document_path, $label);
 					$result->$field_key = $clone_key_array;
 				}
 			}
