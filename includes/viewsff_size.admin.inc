@@ -1,6 +1,15 @@
 <?php
+
+/**
+* @file
+* Module configrations forn.
+*/
+
+/**
+* Implement module configration form
+*/
 function viewsff_size_admin_settings_form() {
-	
+  
   $form = array();
   
   $form['collect_file_field_key'] = array(
