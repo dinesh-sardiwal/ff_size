@@ -51,7 +51,7 @@ function viewsff_size_views_pre_render(&$view) {
   $array_map = array_map("file_key_filter", $field_key_explode);
   $filed_array_size = sizeof($array_map);
 
-  foreach ($view->result as $result) {		
+  foreach ($view->result as $result) {
     for ($i=0; $i < $filed_array_size; $i++) { 
       foreach ($array_map[$i] as $key => $value) {
         viewsff_size_result_object($result, 'field_' . $key, $value);
