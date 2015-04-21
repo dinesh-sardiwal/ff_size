@@ -18,7 +18,7 @@ function viewsff_size_permission() {
 }
 
 /**
-* Implements hook_menu.
+* Implements hook_menu().
 */
 function viewsff_size_menu() {
 
@@ -37,7 +37,7 @@ function viewsff_size_menu() {
 }
 
 /**
-*  Implements hook_views_pre_render overide view result.
+*  Implements hook_views_pre_render().
 */
 function viewsff_size_views_pre_render(&$view) {
 
